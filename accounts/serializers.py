@@ -40,29 +40,22 @@ from rest_framework.exceptions import AuthenticationFailed
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields[self.username_field] = serializers.CharField(required=False)
-        self.fields['email'] = serializers.EmailField(required=False)
 
     def validate(self, attrs):
         username = attrs.get('username')
-        email = attrs.get('email')
-        password = attrs.get('password')
 
-        if email and not username:
+        # Si el usuario ingresó un correo en el campo de username
+        if username and '@' in username:
             try:
-                user = User.objects.get(email=email)
-                username = user.username
+                user = User.objects.get(email=username)
+                attrs['username'] = user.username
             except User.DoesNotExist:
-                # Protect against enumeration
                 pass
         
-        attrs['username'] = username
-
         try:
             return super().validate(attrs)
         except Exception:
-            # Generic message for enumeration protection
-            raise AuthenticationFailed("No active account found with the given credentials")
+            raise AuthenticationFailed("Credenciales inválidas. Verifique su usuario/correo y contraseña.")
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

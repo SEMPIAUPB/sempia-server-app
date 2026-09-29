@@ -59,8 +59,24 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
         
-        # Enqueue Celery task
-        from .tasks import judge_submission_task
-        judge_submission_task.delay(submission.id)
+        # Map language to Judge0 language_id
+        lang = submission.language.lower()
+        language_id = 71 # default python
+        if lang == 'cpp':
+            language_id = 54
+            
+        # Enqueue real Celery task for Node 2
+        contract_data = {
+            "submission_id": str(submission.id),
+            "exercise_id": str(exercise.stable_id),
+            "source_code": submission.source_code,
+            "language_id": language_id,
+            "time_limit": exercise.time_limit_ms / 1000.0,
+            "memory_limit": exercise.memory_limit_kb / 1024.0,
+            "correlation_id": str(submission.id),
+            "version": "1.0"
+        }
+        from config.celery import app as celery_app
+        celery_app.send_task('worker.judge_submission', kwargs={"contract_data": contract_data}, queue='judge_submissions')
         
         return submission
