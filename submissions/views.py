@@ -70,4 +70,8 @@ class SubmissionCallbackView(APIView):
         
         submission.save()
         
+        # Trigger gamification
+        from gamification.services import process_submission_gamification
+        process_submission_gamification(submission)
+        
         return Response({"status": "updated"})

@@ -23,6 +23,7 @@ class User(AbstractUser):
     class Role(models.TextChoices):
         STUDENT = 'STUDENT', _('Student')
         ADMIN_TEACHER = 'ADMIN_TEACHER', _('Admin/Teacher')
+        SUPER_ADMIN = 'SUPER_ADMIN', _('Super Admin')
 
     email = models.EmailField(_('email address'), unique=True)
     full_name = models.CharField(_('full name'), max_length=255)
@@ -31,6 +32,11 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.STUDENT,
     )
+    birth_date = models.DateField(_('birth date'), null=True, blank=True)
+    is_student = models.BooleanField(_('is student'), default=True)
+    university = models.CharField(_('university'), max_length=255, default='Universidad Pontificia Bolivariana', blank=True)
+    current_semester = models.IntegerField(_('current semester'), null=True, blank=True)
+    faculty = models.CharField(_('faculty'), max_length=255, blank=True)
     
     objects = CustomUserManager()
 

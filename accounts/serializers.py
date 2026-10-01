@@ -8,22 +8,32 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'full_name', 'role', 'date_joined')
+        fields = ('id', 'username', 'email', 'full_name', 'role', 'birth_date', 'is_student', 'university', 'current_semester', 'faculty', 'date_joined')
         read_only_fields = ('id', 'role', 'date_joined')
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    birth_date = serializers.DateField(required=False, allow_null=True)
+    is_student = serializers.BooleanField(default=True)
+    university = serializers.CharField(required=False, allow_blank=True, default='Universidad Pontificia Bolivariana')
+    current_semester = serializers.IntegerField(required=False, allow_null=True)
+    faculty = serializers.CharField(required=False, allow_blank=True)
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'full_name', 'password')
+        fields = ('username', 'email', 'full_name', 'password', 'birth_date', 'is_student', 'university', 'current_semester', 'faculty')
 
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            full_name=validated_data['full_name']
+            full_name=validated_data['full_name'],
+            birth_date=validated_data.get('birth_date'),
+            is_student=validated_data.get('is_student', True),
+            university=validated_data.get('university', 'Universidad Pontificia Bolivariana'),
+            current_semester=validated_data.get('current_semester'),
+            faculty=validated_data.get('faculty', '')
         )
         # Create uninitialized skill progress for all skills
         from skills.models import Skill, UserSkillProgress

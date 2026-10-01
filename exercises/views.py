@@ -30,7 +30,7 @@ class ExerciseListView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['difficulty', 'skills__id']
-    search_fields = ['title', 'stable_id']
+    search_fields = ['title', 'stable_id', 'skills__name']
 
     def get_queryset(self):
         user = self.request.user
