@@ -74,4 +74,8 @@ class SubmissionCallbackView(APIView):
         from gamification.services import process_submission_gamification
         process_submission_gamification(submission)
         
+        # Trigger skill graph update (RF-14)
+        from skills.services import update_skill_progress
+        update_skill_progress(submission)
+        
         return Response({"status": "updated"})

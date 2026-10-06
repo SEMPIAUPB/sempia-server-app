@@ -56,13 +56,13 @@ def process_submission_gamification(submission):
         user = submission.author
         exercise = submission.exercise
         
-        # 1. Award points
-        award_points(
+        # 1. Award points (Idempotent per exercise so no farming)
+        awarded, msg = award_points(
             user, 
             ExperienceEvent.EventType.EXERCISE_SOLVED, 
             10, 
             f'Resolvió el ejercicio: {exercise.title}', 
-            f'solve_{submission.id}'
+            f'solve_{user.id}_{exercise.id}'
         )
         
         profile = get_or_create_profile(user)
