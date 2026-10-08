@@ -1,0 +1,282 @@
+[
+    {
+        "id": "complejidad",
+        "habilidad": "Análisis de Complejidad (Big O)",
+        "dificultad_peso": 1,
+        "prerrequisitos": []
+    },
+    {
+        "id": "arreglos_strings",
+        "habilidad": "Arreglos y Strings",
+        "dificultad_peso": 1,
+        "prerrequisitos": [
+            "complejidad"
+        ]
+    },
+    {
+        "id": "tablas_hash",
+        "habilidad": "Hash Tables / Maps",
+        "dificultad_peso": 2,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "dos_punteros",
+        "habilidad": "Dos Punteros (Two Pointers)",
+        "dificultad_peso": 2,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "sliding_window",
+        "habilidad": "Ventana Deslizante (Sliding Window)",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "dos_punteros"
+        ]
+    },
+    {
+        "id": "prefix_sum",
+        "habilidad": "Sumas Prefijas (Prefix Sums)",
+        "dificultad_peso": 2,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "bit_manipulation",
+        "habilidad": "Manipulación de Bits",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "complejidad"
+        ]
+    },
+    {
+        "id": "busqueda_binaria",
+        "habilidad": "Búsqueda Binaria",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "busqueda_binaria_respuesta",
+        "habilidad": "Búsqueda Binaria sobre la Respuesta",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "busqueda_binaria"
+        ]
+    },
+    {
+        "id": "pilas_colas",
+        "habilidad": "Pilas y Colas (Stacks & Queues)",
+        "dificultad_peso": 2,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "colas_prioridad",
+        "habilidad": "Colas de Prioridad (Heaps)",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "pilas_colas"
+        ]
+    },
+    {
+        "id": "recursion",
+        "habilidad": "Recursión Básica",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "complejidad"
+        ]
+    },
+    {
+        "id": "backtracking",
+        "habilidad": "Backtracking",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "recursion"
+        ]
+    },
+    {
+        "id": "greedy",
+        "habilidad": "Algoritmos Ávidos (Greedy)",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "arreglos_strings",
+            "colas_prioridad"
+        ]
+    },
+    {
+        "id": "dp_1d",
+        "habilidad": "Programación Dinámica 1D",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "recursion"
+        ]
+    },
+    {
+        "id": "dp_2d",
+        "habilidad": "Programación Dinámica 2D (Knapsack, LCS)",
+        "dificultad_peso": 6,
+        "prerrequisitos": [
+            "dp_1d"
+        ]
+    },
+    {
+        "id": "matematicas_basicas",
+        "habilidad": "Matemáticas Básicas y Geometría simple",
+        "dificultad_peso": 2,
+        "prerrequisitos": []
+    },
+    {
+        "id": "teoria_numeros",
+        "habilidad": "Teoría de Números (Criba, GCD, LCM)",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "matematicas_basicas"
+        ]
+    },
+    {
+        "id": "aritmetica_modular",
+        "habilidad": "Aritmética Modular y Exponenciación Rápida",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "teoria_numeros"
+        ]
+    },
+    {
+        "id": "combinatoria",
+        "habilidad": "Combinatoria (nCr, Inversos Modulares)",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "aritmetica_modular"
+        ]
+    },
+    {
+        "id": "grafos_representacion",
+        "habilidad": "Representación de Grafos",
+        "dificultad_peso": 2,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "bfs",
+        "habilidad": "Búsqueda en Anchura (BFS)",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "grafos_representacion",
+            "pilas_colas"
+        ]
+    },
+    {
+        "id": "dfs",
+        "habilidad": "Búsqueda en Profundidad (DFS)",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "grafos_representacion",
+            "recursion"
+        ]
+    },
+    {
+        "id": "dsu",
+        "habilidad": "Disjoint Set Union (Union-Find)",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "grafos_representacion"
+        ]
+    },
+    {
+        "id": "caminos_cortos",
+        "habilidad": "Caminos Más Cortos (Dijkstra)",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "bfs",
+            "colas_prioridad"
+        ]
+    },
+    {
+        "id": "mst",
+        "habilidad": "Árbol de Expansión Mínima (Kruskal, Prim)",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "dsu",
+            "colas_prioridad"
+        ]
+    },
+    {
+        "id": "topological_sort",
+        "habilidad": "Ordenamiento Topológico",
+        "dificultad_peso": 4,
+        "prerrequisitos": [
+            "dfs",
+            "bfs"
+        ]
+    },
+    {
+        "id": "arboles_basico",
+        "habilidad": "Árboles Binarios y BST",
+        "dificultad_peso": 3,
+        "prerrequisitos": [
+            "dfs",
+            "bfs"
+        ]
+    },
+    {
+        "id": "lca",
+        "habilidad": "Ancestro Común Más Bajo (LCA)",
+        "dificultad_peso": 6,
+        "prerrequisitos": [
+            "arboles_basico",
+            "dfs"
+        ]
+    },
+    {
+        "id": "segment_tree",
+        "habilidad": "Árboles de Segmentos (Segment Tree)",
+        "dificultad_peso": 7,
+        "prerrequisitos": [
+            "prefix_sum",
+            "arboles_basico"
+        ]
+    },
+    {
+        "id": "fenwick_tree",
+        "habilidad": "Fenwick Tree (BIT)",
+        "dificultad_peso": 6,
+        "prerrequisitos": [
+            "prefix_sum",
+            "bit_manipulation"
+        ]
+    },
+    {
+        "id": "trie",
+        "habilidad": "Trie (Árbol de Prefijos)",
+        "dificultad_peso": 5,
+        "prerrequisitos": [
+            "arboles_basico",
+            "arreglos_strings"
+        ]
+    },
+    {
+        "id": "dp_bitmask",
+        "habilidad": "Programación Dinámica con Máscara de Bits",
+        "dificultad_peso": 8,
+        "prerrequisitos": [
+            "dp_2d",
+            "bit_manipulation"
+        ]
+    },
+    {
+        "id": "kmp",
+        "habilidad": "String Matching Avanzado (KMP / Z-Algorithm)",
+        "dificultad_peso": 7,
+        "prerrequisitos": [
+            "arreglos_strings"
+        ]
+    }
+]

@@ -33,3 +33,15 @@ class TutoringProxyView(APIView):
             return Response(resp.json(), status=resp.status_code)
         except requests.RequestException as e:
             return Response({"error": "AI service unavailable", "details": str(e)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+class InitDBView(APIView):
+    permission_classes = [permissions.AllowAny]
+    def get(self, request):
+        try:
+            import load_graph
+            load_graph.run()
+            import populate_diagnostics
+            populate_diagnostics.run()
+            return Response({"status": "Success"})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

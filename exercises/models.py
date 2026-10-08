@@ -3,11 +3,6 @@ from django.conf import settings
 from skills.models import Skill
 
 class Exercise(models.Model):
-    class Difficulty(models.IntegerChoices):
-        EASY = 1, 'Easy'
-        MEDIUM = 2, 'Medium'
-        HARD = 3, 'Hard'
-
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Draft'
         PUBLISHED = 'PUBLISHED', 'Published'
@@ -16,7 +11,7 @@ class Exercise(models.Model):
     stable_id = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=255)
     statement = models.TextField()
-    difficulty = models.IntegerField(choices=Difficulty.choices, default=Difficulty.MEDIUM)
+    difficulty = models.IntegerField(default=100)
     time_limit_ms = models.IntegerField(default=1000)
     memory_limit_kb = models.IntegerField(default=256000)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)

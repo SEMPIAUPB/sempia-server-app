@@ -68,8 +68,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'sempia',
+        'USER': 'sempia',
+        'PASSWORD': 'sempia',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 # Fallback to sqlite if postgres is not available during simple setup

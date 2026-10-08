@@ -9,6 +9,7 @@ from exercises.models import Exercise
 class UserSkillProgressView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSkillProgressSerializer
+    pagination_class = None
 
     def get_queryset(self):
         # We also create missing profiles if needed
@@ -21,6 +22,7 @@ class UserSkillProgressView(generics.ListAPIView):
 class DiagnosticExamView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = DiagnosticQuestionSerializer
+    pagination_class = None
 
     def get_queryset(self):
         # Return a sample of questions (e.g. 1 per skill) to keep it brief
@@ -68,13 +70,7 @@ class SubmitDiagnosticExamView(APIView):
                 progress.is_initialized = True
                 progress.save()
                 
-        # Mark all other skills as initialized with 0% if they weren't covered or answered
-        all_skills = Skill.objects.all()
-        for s in all_skills:
-            p, _ = UserSkillProgress.objects.get_or_create(user=user, skill=s)
-            if not p.is_initialized:
-                p.is_initialized = True
-                p.save()
+
                 
         return Response({"status": "Exam processed successfully."})
 
