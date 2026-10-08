@@ -102,9 +102,18 @@ class RecommendedExercisesView(APIView):
         if not ready_skills:
             ready_skills = [p.skill for p in progresses.order_by('mastery_percentage')[:3]]
             
-        # Get exercises that teach these skills
-        recommended_exercises = Exercise.objects.filter(skills__in=ready_skills).distinct()[:10]
+        # Get exercises that teach these skills, excluding ones the user has already solved
+        from submissions.models import Submission
+        solved_exercises_ids = Submission.objects.filter(
+            author=user, 
+            verdict=Submission.Verdict.ACCEPTED
+        ).values_list('exercise_id', flat=True)
         
+        recommended_exercises = Exercise.objects.filter(
+            skills__in=ready_skills
+        ).exclude(
+            id__in=solved_exercises_ids
+        ).distinct()[:10]
         from exercises.serializers import ExerciseListSerializer
         serializer = ExerciseListSerializer(recommended_exercises, many=True)
         return Response(serializer.data)

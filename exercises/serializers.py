@@ -17,10 +17,22 @@ class SkillBasicSerializer(serializers.ModelSerializer):
 
 class ExerciseListSerializer(serializers.ModelSerializer):
     skills = SkillBasicSerializer(many=True, read_only=True)
+    is_solved = serializers.SerializerMethodField()
     
     class Meta:
         model = Exercise
-        fields = ['id', 'stable_id', 'title', 'difficulty', 'status', 'skills']
+        fields = ['id', 'stable_id', 'title', 'difficulty', 'status', 'skills', 'is_solved']
+
+    def get_is_solved(self, obj):
+        request = self.context.get('request')
+        if not request or not getattr(request.user, 'is_authenticated', False):
+            return False
+        from submissions.models import Submission
+        return Submission.objects.filter(
+            author=request.user, 
+            exercise=obj, 
+            verdict=Submission.Verdict.ACCEPTED
+        ).exists()
 
 class ExerciseDetailSerializer(serializers.ModelSerializer):
     skills = SkillBasicSerializer(many=True, read_only=True)

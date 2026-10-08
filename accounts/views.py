@@ -62,3 +62,62 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DashboardMetricsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        
+        # 1. Learning Metrics from Submissions
+        from submissions.models import Submission
+        submissions = Submission.objects.filter(author=user)
+        total_subs = submissions.count()
+        ac_subs = submissions.filter(verdict='ACCEPTED')
+        ac_count = ac_subs.count()
+        
+        problems_solved = ac_subs.values('exercise').distinct().count()
+        
+        success_rate = 0
+        if total_subs > 0:
+            success_rate = int((ac_count / total_subs) * 100)
+            
+        # Training hours: mock logic or sum of something? 
+        # For a realistic mock based on activity: each submission ~ 15 minutes of work
+        training_hours = round((total_subs * 15.0) / 60.0, 1)
+
+        # 2. Gamification Streak
+        from gamification.models import UserGamificationProfile
+        profile = UserGamificationProfile.objects.filter(user=user).first()
+        streak = profile.current_streak if profile else 0
+        points = profile.points if profile else 0
+        level = profile.level if profile else 1
+        
+        # Next level calculation (Level * 100)
+        next_level_points = level * 100
+        xp_in_level = points % 100
+        progress_percentage = (xp_in_level / 100.0) * 100 if next_level_points > 0 else 0
+
+        # 3. Top Skills
+        from skills.models import UserSkillProgress
+        skills_qs = UserSkillProgress.objects.filter(user=user, mastery_percentage__gt=0).order_by('-mastery_percentage')[:5]
+        top_skills = [
+            {"name": sp.skill.name, "percentage": int(sp.mastery_percentage)} 
+            for sp in skills_qs
+        ]
+        
+        return Response({
+            "learning_metrics": {
+                "problems_solved": problems_solved,
+                "success_rate": success_rate,
+                "current_streak": streak,
+                "training_hours": training_hours
+            },
+            "gamification": {
+                "points": points,
+                "level": level,
+                "next_level_points": next_level_points,
+                "progress_percentage": progress_percentage
+            },
+            "top_skills": top_skills
+        })
