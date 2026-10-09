@@ -24,9 +24,11 @@ class UserAchievementSerializer(serializers.ModelSerializer):
         fields = ['achievement', 'awarded_at', 'reason']
 
 class ChallengeSerializer(serializers.ModelSerializer):
+    exercises = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Challenge
-        fields = ['stable_id', 'title', 'description', 'start_date', 'end_date']
+        fields = ['stable_id', 'title', 'description', 'start_date', 'end_date', 'exercises']
 
 class ChallengeParticipationSerializer(serializers.ModelSerializer):
     challenge = ChallengeSerializer(read_only=True)

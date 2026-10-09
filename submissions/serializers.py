@@ -14,17 +14,18 @@ class SubmissionSerializer(serializers.ModelSerializer):
     transitions = SubmissionTransitionSerializer(many=True, read_only=True)
     author_username = serializers.CharField(source='author.username', read_only=True)
     exercise_stable_id = serializers.CharField(source='exercise.stable_id', read_only=True)
+    exercise_title = serializers.CharField(source='exercise.title', read_only=True)
 
     class Meta:
         model = Submission
         fields = [
-            'id', 'author_username', 'exercise_stable_id', 'source_code', 'language',
+            'id', 'author_username', 'exercise_stable_id', 'exercise_title', 'source_code', 'language',
             'state', 'verdict', 'time_used_ms', 'memory_used_kb', 'error_details',
             'created_at', 'updated_at', 'transitions'
         ]
         read_only_fields = [
             'state', 'verdict', 'time_used_ms', 'memory_used_kb', 'error_details',
-            'created_at', 'updated_at', 'author_username', 'exercise_stable_id'
+            'created_at', 'updated_at', 'author_username', 'exercise_stable_id', 'exercise_title'
         ]
 
 class SubmissionCreateSerializer(serializers.ModelSerializer):

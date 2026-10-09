@@ -25,6 +25,19 @@ def award_points(user, event_type, points, description, reference_id):
     profile = get_or_create_profile(user)
     profile.points += points
     
+    # Update Streak
+    today = timezone.now().date()
+    if profile.last_action_date != today:
+        if profile.last_action_date == today - timezone.timedelta(days=1):
+            profile.current_streak += 1
+        else:
+            profile.current_streak = 1
+            
+        if profile.current_streak > profile.highest_streak:
+            profile.highest_streak = profile.current_streak
+            
+        profile.last_action_date = today
+
     # Calculate level (simple logic: level = points // 100 + 1)
     profile.level = (profile.points // 100) + 1
     profile.save()

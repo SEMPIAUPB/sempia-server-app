@@ -25,12 +25,30 @@ class GamificationRankingView(generics.ListAPIView):
         # Public ranking, ordered by points desc
         return UserGamificationProfile.objects.all().order_by('-points', 'user__username')
 
-class UserAchievementsView(generics.ListAPIView):
+class CatalogAchievementsView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserAchievementSerializer
 
-    def get_queryset(self):
-        return UserAchievement.objects.filter(user=self.request.user).order_by('-awarded_at')
+    def get(self, request, *args, **kwargs):
+        from .models import Achievement
+        achievements = Achievement.objects.all().order_by('id')
+        user_achievements = UserAchievement.objects.filter(user=request.user)
+        ua_map = {ua.achievement_id: ua for ua in user_achievements}
+        
+        data = []
+        for ach in achievements:
+            ua = ua_map.get(ach.id)
+            data.append({
+                'id': ach.id,
+                'stable_id': ach.stable_id,
+                'title': ach.title,
+                'description': ach.description,
+                'image_url': ach.image_url,
+                'is_unlocked': bool(ua),
+                'awarded_at': ua.awarded_at if ua else None,
+                'reason': ua.reason if ua else None,
+            })
+            
+        return Response(data)
 
 class ChallengeListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -38,8 +56,8 @@ class ChallengeListView(generics.ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        # Active challenges
-        return Challenge.objects.filter(start_date__lte=now, end_date__gte=now)
+        # Active and Upcoming challenges
+        return Challenge.objects.filter(end_date__gte=now).order_by('start_date')
 
 class JoinChallengeView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
