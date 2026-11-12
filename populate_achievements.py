@@ -10,6 +10,12 @@ from gamification.models import Achievement
 
 achievements_data = [
     {
+        "stable_id": "ACH_START_JOURNEY",
+        "title": "Atrévete a Aprender",
+        "description": "Completaste tu registro y diste el primer paso realizando el examen diagnóstico. ¡El viaje hacia la maestría ha comenzado!",
+        "image_url": "https://img.icons8.com/color/96/000000/launch.png"
+    },
+    {
         "stable_id": "ACH_FIRST_BLOOD",
         "title": "Primer Paso",
         "description": "El viaje de mil millas comienza con un solo paso. Resolviste tu primer problema en la plataforma.",
@@ -112,10 +118,14 @@ def run():
     admin_user = User.objects.filter(email='admin@sempia.com').first()
     if admin_user:
         print("Asignando insignias de prueba al usuario administrador...")
+        ach0 = Achievement.objects.get(stable_id="ACH_START_JOURNEY")
         ach1 = Achievement.objects.get(stable_id="ACH_FIRST_BLOOD")
         ach2 = Achievement.objects.get(stable_id="ACH_FAST_MIND")
         ach3 = Achievement.objects.get(stable_id="ACH_GRAPH_KING")
         
+        UserAchievement.objects.get_or_create(
+            user=admin_user, achievement=ach0, defaults={"reason": "Completaste el diagnóstico inicial."}
+        )
         UserAchievement.objects.get_or_create(
             user=admin_user, achievement=ach1, defaults={"reason": "Primer problema resuelto: Two Sum."}
         )

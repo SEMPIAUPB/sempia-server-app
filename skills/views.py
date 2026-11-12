@@ -67,10 +67,17 @@ class SubmitDiagnosticExamView(APIView):
             # update only if not initialized or if this new score is higher
             if not progress.is_initialized or percentage > progress.mastery_percentage:
                 progress.mastery_percentage = percentage
-                progress.is_initialized = True
+                progress.is_initialized = (percentage > 0)
                 progress.save()
-                
+            elif progress.mastery_percentage == 0:
+                progress.is_initialized = False
+                progress.save()
 
+        # Award achievement: "Atrévete a Aprender" for completing registration and diagnostic
+        from gamification.services import award_achievement, award_points
+        from gamification.models import ExperienceEvent
+        award_achievement(user, 'ACH_START_JOURNEY', 'Completaste el registro y resolviste el examen diagnóstico: atreverse a aprender.')
+        award_points(user, ExperienceEvent.EventType.EXERCISE_SOLVED, 50, 'Diagnóstico inicial completado', f'diag_init_{user.id}')
                 
         return Response({"status": "Exam processed successfully."})
 

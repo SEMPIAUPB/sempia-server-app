@@ -59,24 +59,39 @@ class ChallengeListView(generics.ListAPIView):
         # Active and Upcoming challenges
         return Challenge.objects.filter(end_date__gte=now).order_by('start_date')
 
+class ChallengeDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChallengeSerializer
+    lookup_field = 'stable_id'
+    queryset = Challenge.objects.all()
+
 class JoinChallengeView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ChallengeParticipationSerializer
 
     def create(self, request, *args, **kwargs):
         challenge_id = request.data.get('challenge_id')
-        try:
-            challenge = Challenge.objects.get(stable_id=challenge_id)
-        except Challenge.DoesNotExist:
+        challenge = Challenge.objects.filter(stable_id=challenge_id).first()
+        if not challenge and str(challenge_id).isdigit():
+            challenge = Challenge.objects.filter(id=int(challenge_id)).first()
+            
+        if not challenge:
             return Response({"detail": "Challenge not found."}, status=status.HTTP_404_NOT_FOUND)
             
         now = timezone.now()
-        if not (challenge.start_date <= now <= challenge.end_date):
-            return Response({"detail": "Challenge is not active."}, status=status.HTTP_400_BAD_REQUEST)
+        if challenge.end_date < now:
+            return Response({"detail": "Esta competición ya ha finalizado."}, status=status.HTTP_400_BAD_REQUEST)
             
-        if ChallengeParticipation.objects.filter(user=request.user, challenge=challenge).exists():
-            return Response({"detail": "Already joined."}, status=status.HTTP_400_BAD_REQUEST)
-            
-        part = ChallengeParticipation.objects.create(user=request.user, challenge=challenge)
+        part, created = ChallengeParticipation.objects.get_or_create(
+            user=request.user,
+            challenge=challenge,
+            defaults={"score": 0}
+        )
+        
         serializer = self.get_serializer(part)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        data = serializer.data
+        data["is_joined"] = True
+        data["already_joined"] = not created
+        data["message"] = "¡Ya estás registrado en esta competición!" if not created else "¡Te has registrado exitosamente en la competición!"
+        
+        return Response(data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
